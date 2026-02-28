@@ -22,6 +22,7 @@ type Client struct {
 	Path          string
 	Name          string
 	Enabled       bool
+	Timeout       uint64 // given in ms
 	LastCheckedOk string
 }
 
@@ -154,6 +155,7 @@ func (c *MandosCtl) GetClients() ([]Client, error) {
 					Path:          string(clientPath),
 					Name:          properties["Name"].Value().(string),
 					Enabled:       properties["Enabled"].Value().(bool),
+					Timeout:       properties["Timeout"].Value().(uint64),
 					LastCheckedOk: properties["LastCheckedOK"].Value().(string),
 				}
 				foundClients = append(foundClients, client)

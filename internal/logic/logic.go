@@ -109,13 +109,14 @@ func (l *Logic) handleStatusChange(clientName string, enable bool) {
 
 func (l *Logic) handleStatus() {
 	resultLines := make([]string, 0)
-	resultLines = append(resultLines, "Name\tStatus\tLast Check OK")
+	resultLines = append(resultLines, "Name\tStatus\tTimeout\tLast Check OK")
 	clients, err := l.mandos.GetClients()
 	if err != nil {
 		log.Panicf("could not get clients because of mandos: %v", err)
 	}
 	for _, client := range clients {
-		resultLine := fmt.Sprintf("%s\t%s\t%s", client.Name, getEnableWord(client.Enabled), client.LastCheckedOk)
+		timeout := time.Duration(client.Timeout * uint64(time.Millisecond))
+		resultLine := fmt.Sprintf("%s\t%s\t%s\t%s", client.Name, getEnableWord(client.Enabled), timeout, client.LastCheckedOk)
 		resultLines = append(resultLines, resultLine)
 	}
 	l.sendMessage(strings.Join(resultLines, "\n"))

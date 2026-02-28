@@ -1,0 +1,6 @@
+Origin: deb all
+Label: deb all
+Archive: all
+Suite: all
+Architecture: amd64
+Component: main

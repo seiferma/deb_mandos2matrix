@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/seiferma/mandos2mqtt/internal/mandos"
+	"github.com/seiferma/mandos2matrix/internal/mandos"
 )
 
 const rejectQuietPeriodInSeconds = 30

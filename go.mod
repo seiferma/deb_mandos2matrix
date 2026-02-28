@@ -1,4 +1,4 @@
-module github.com/seiferma/mandos2mqtt
+module github.com/seiferma/mandos2matrix
 
 go 1.24.0
 

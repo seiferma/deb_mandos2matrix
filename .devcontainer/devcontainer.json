@@ -1,5 +1,5 @@
 {
-	"name": "mandos2mqtt",
+	"name": "mandos2matrix",
     "build": {
         "dockerfile": "Dockerfile"
     },

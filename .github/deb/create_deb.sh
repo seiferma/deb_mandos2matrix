@@ -19,14 +19,14 @@ rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR
 
 # prepare control
-mkdir -p "$BUILD_DIR/mandos2mqtt/DEBIAN"
-envsubst < "$SCRIPT_DIR/control" > "$BUILD_DIR/mandos2mqtt/DEBIAN/control"
+mkdir -p "$BUILD_DIR/mandos2matrix/DEBIAN"
+envsubst < "$SCRIPT_DIR/control" > "$BUILD_DIR/mandos2matrix/DEBIAN/control"
 
 # prepare data
-mkdir -p "$BUILD_DIR/mandos2mqtt/usr/bin"
+mkdir -p "$BUILD_DIR/mandos2matrix/usr/bin"
 chmod +x "$binfile"
-cp "$binfile" "$BUILD_DIR/mandos2mqtt/usr/bin/"
+cp "$binfile" "$BUILD_DIR/mandos2matrix/usr/bin/"
 
 # create deb file
 cd "$BUILD_DIR"
-dpkg-deb --root-owner-group --build mandos2mqtt mandos2mqtt_"$version"_"$arch".deb
+dpkg-deb --root-owner-group --build mandos2matrix mandos2matrix_"$version"_"$arch".deb

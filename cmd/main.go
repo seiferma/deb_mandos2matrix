@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/seiferma/mandos2mqtt/internal/logic"
-	"github.com/seiferma/mandos2mqtt/internal/mandos"
-	"github.com/seiferma/mandos2mqtt/internal/matrix"
+	"github.com/seiferma/mandos2matrix/internal/logic"
+	"github.com/seiferma/mandos2matrix/internal/mandos"
+	"github.com/seiferma/mandos2matrix/internal/matrix"
 )
 
 const watchdogIntervalInSeconds = 60

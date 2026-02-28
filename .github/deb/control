@@ -1,7 +1,7 @@
-Package: mandos2mqtt
+Package: mandos2matrix
 Version: $version
 Section: utils
 Priority: optional
 Architecture: $arch
 Maintainer: Stephan Seifermann <seiferma@users.noreply.github.com>
-Description: Packaged mandos2mqtt
+Description: Packaged mandos2matrix

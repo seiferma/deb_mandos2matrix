@@ -1,4 +1,4 @@
-APPNAME:=mandos2mqtt
+APPNAME:=mandos2matrix
 RELEASE?=0
 CGO_ENABLED?=0
 

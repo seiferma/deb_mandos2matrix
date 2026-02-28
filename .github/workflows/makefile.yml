@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  GOLANG_VERSION: 1.23
+  GOLANG_VERSION: 1.24
 
 jobs:
   constants: 

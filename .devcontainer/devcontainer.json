@@ -1,0 +1,38 @@
+{
+	"name": "mandos2mqtt",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+	"overrideCommand": false,
+	"features": {
+		"ghcr.io/jungaretti/features/make:1": {},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker": {
+			"moby": false
+		}
+	},
+	"mounts": [
+		{
+			"type": "bind",
+			"source": "/var/run/docker.sock",
+			"target": "/var/run/docker.sock"
+		},
+		{
+			"type": "bind",
+			"source": "${localEnv:HOME}/.continue",
+			"target": "/root/.continue"
+		}
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.makefile-tools",
+				"golang.go",
+				"ms-azuretools.vscode-docker",
+				"Continue.continue"
+			],
+			"settings": {
+				"go.buildTags": "goolm"
+			}
+		}
+	}
+}

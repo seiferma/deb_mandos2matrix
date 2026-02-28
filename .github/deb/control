@@ -1,0 +1,7 @@
+Package: mandos2mqtt
+Version: $version
+Section: utils
+Priority: optional
+Architecture: $arch
+Maintainer: Stephan Seifermann <seiferma@users.noreply.github.com>
+Description: Packaged mandos2mqtt

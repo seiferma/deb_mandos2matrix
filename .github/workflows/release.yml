@@ -1,0 +1,146 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+env:
+  BUILD_DIR: /tmp/build
+
+jobs:
+  build:
+      uses: ./.github/workflows/makefile.yml
+
+  variables: 
+    runs-on: ubuntu-latest
+    outputs:
+      app_version: ${{ steps.set_variables.outputs.app_version }}
+    steps:
+    - id: set_variables
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "app_version=$VERSION" >> $GITHUB_OUTPUT
+
+  package:
+    runs-on: ubuntu-latest
+    needs:
+      - variables
+      - build
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download
+      uses: actions/download-artifact@v4
+      with:
+        name: bin-${{ matrix.arch }}
+        path: /tmp/binary/
+
+    - name: Build
+      id: build
+      run: |
+        .github/deb/create_deb.sh ${{ needs.variables.outputs.app_version }} ${{ matrix.arch }} /tmp/binary/*
+        echo "file=$(ls $BUILD_DIR/*.deb | head -n 1)" >> "$GITHUB_OUTPUT"
+
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: deb-${{ matrix.arch }}
+        path: ${{ steps.build.outputs.file }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - variables
+      - package
+    permissions:
+      contents: write
+    steps:
+
+    - name: Download Binaries
+      uses: actions/download-artifact@v4
+      with:
+        pattern: bin-*
+        path: /tmp/binary/
+
+    - name: Rename Binaries
+      run: |
+        mkdir -p ./binaries/
+        for dirpath in /tmp/binary/*; do
+          dirname=$(basename $dirpath)
+          arch=${dirname#bin-}
+          binary=$(ls $dirpath/*)
+          filename=$(basename $binary)
+          version=${{ needs.variables.outputs.app_version }}
+          mv "$binary" ./binaries/"$filename"_"$version"_"$arch"
+        done
+
+    - name: Download Debs
+      uses: actions/download-artifact@v4
+      with:
+        pattern: deb-*
+        path: ./debs/
+        merge-multiple: true
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          ./binaries/*
+          ./debs/*
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: package
+    permissions:
+      contents: write
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download
+      uses: actions/download-artifact@v4
+      with:
+        pattern: deb-*
+        path: ./new-debs
+        merge-multiple: true
+
+    - name: Import GPG key
+      uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ secrets.GPG_PRIVATE }}
+        passphrase: ${{ secrets.GPG_SECRET }}
+
+    - name: Install aptly
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y aptly
+
+    - name: Checkout pages repo
+      uses: actions/checkout@v4
+      with:
+        ref: 'gh-pages'
+        path: deb
+
+    - name: Build apt repo
+      run: |
+        .github/deb/build_repo.sh
+      env:
+        GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+
+    - name: Commit & Push changes
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
+        directory: ./deb
+        message: 'update binaries in repository ${date}'
+        amend: true
+        force: true

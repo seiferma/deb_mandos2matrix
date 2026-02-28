@@ -159,3 +159,11 @@ func (mc *MatrixClient) SendMessage(message string) error {
 func (mc *MatrixClient) RegisterCallback(callback MessageReceivedCallback) {
 	mc.callbacks = append(mc.callbacks, callback)
 }
+
+func (mc *MatrixClient) GetRoomInfo(ctx context.Context) (*mautrix.PublicRoomInfo, error) {
+	resp, err := mc.client.GetRoomSummary(ctx, mc.roomId)
+	if err != nil {
+		return nil, err
+	}
+	return &resp.PublicRoomInfo, nil
+}

@@ -8,11 +8,15 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/seiferma/mandos2mqtt/internal/logic"
 	"github.com/seiferma/mandos2mqtt/internal/mandos"
 	"github.com/seiferma/mandos2mqtt/internal/matrix"
 )
+
+const watchdogIntervalInSeconds = 60
+const healthcheckTimeoutInSeconds = 10
 
 func readConfigFilePaths() (initialConfigPath *string, runtimeConfigPath *string) {
 	runtimeConfigPath = flag.String("runtime-config", "", "Path to the runtime configuration file (mandatory)")
@@ -125,6 +129,62 @@ func main() {
 		logic.HandleClientRequestRejected(context.TODO(), clientPath, reason)
 	})
 
+	// start watchdog
+	ctx, ctxCancel := context.WithCancel(context.Background())
+	defer ctxCancel()
+	startWatchdog(ctx, matrixClient, mandos)
+
 	// wait for termination signal
 	waitForTerminationSignal()
+}
+
+func startWatchdog(ctx context.Context, matrix *matrix.MatrixClient, mandos *mandos.MandosCtl) {
+	ticker := time.NewTicker(watchdogIntervalInSeconds * time.Second)
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				ticker.Stop()
+				return
+			case <-ticker.C:
+				err := watchdogTest(ctx, matrix, mandos)
+				if err != nil {
+					log.Fatalf("watchdog failed: %s", err)
+				}
+			}
+		}
+	}()
+}
+
+func watchdogTest(parentCtx context.Context, matrix *matrix.MatrixClient, mandos *mandos.MandosCtl) error {
+	ctx, cancel := context.WithTimeout(parentCtx, healthcheckTimeoutInSeconds*time.Second)
+	defer cancel()
+
+	err := watchdogMandosTest(ctx, mandos)
+	if err != nil {
+		return fmt.Errorf("health check of mandos failed: %w", err)
+	}
+
+	err = watchdogMatrixTest(ctx, matrix)
+	if err != nil {
+		return fmt.Errorf("health check of matrix failed: %w", err)
+	}
+
+	return nil
+}
+
+func watchdogMandosTest(_ context.Context, mandos *mandos.MandosCtl) error {
+	_, err := mandos.GetClients()
+	if err != nil {
+		return fmt.Errorf("health check of mandos failed: %w", err)
+	}
+	return nil
+}
+
+func watchdogMatrixTest(ctx context.Context, matrix *matrix.MatrixClient) error {
+	_, err := matrix.GetRoomInfo(ctx)
+	if err != nil {
+		return fmt.Errorf("health check of matrix failed: %w", err)
+	}
+	return nil
 }

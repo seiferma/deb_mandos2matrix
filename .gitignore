@@ -26,6 +26,7 @@ go.work.sum
 
 # custom paths
 build/
+cmd/__debug_*
 .vscode/launch.json
 
 # deb repo

@@ -1,7 +1,7 @@
 FROM quay.io/seiferma/mandos-server:latest
 
 RUN apt-get update && \
-    apt-get install -y --no-install-suggests --no-install-recommends golang socat ca-certificates && \
+    apt-get install -y --no-install-suggests --no-install-recommends golang socat openssh-client ca-certificates && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 RUN go install github.com/go-delve/delve/cmd/dlv@latest && \

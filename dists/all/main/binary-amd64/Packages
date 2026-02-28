@@ -1,0 +1,15 @@
+Package: mandos2matrix
+Priority: optional
+Section: utils
+Maintainer: Stephan Seifermann <seiferma@users.noreply.github.com>
+Architecture: amd64
+Version: 0.1.0
+Depends: mandos
+Filename: pool/main/m/mandos2matrix/mandos2matrix_0.1.0_amd64.deb
+Size: 5597130
+MD5sum: 85bf2df34e5a72666c7c1cc0bf9884cc
+SHA1: e6b67184619150b8f4284ce4bcac613ffe64a6cb
+SHA256: 58ae4cd7c97ad552a001894c8c3274bed43e08a0c4f1857dee811a1a084b3141
+SHA512: b6911e76e7c88475f9e8720f057a55087ad7b5cf23413941e22e2399cf8ad9dc5dabe784e3f24745fd2341508e51912fc4df54bd73c8125bc508877e6810280f
+Description: Packaged mandos2matrix
+

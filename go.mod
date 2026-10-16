@@ -3,7 +3,7 @@ module github.com/seiferma/mandos2matrix
 go 1.24.0
 
 require (
-	github.com/godbus/dbus/v5 v5.2.1
+	github.com/godbus/dbus/v5 v5.2.4
 	maunium.net/go/mautrix v0.25.0
 )
 
@@ -11,8 +11,6 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/mattn/go-sqlite3 v1.14.32 // indirect
-	github.com/petermattis/goid v0.0.0-20250813065127-a731cc31b4fe // indirect
 	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect

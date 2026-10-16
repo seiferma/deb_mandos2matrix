@@ -10,7 +10,7 @@ import (
 	"github.com/seiferma/mandos2matrix/internal/mandos"
 )
 
-const rejectQuietPeriodInSeconds = 30
+const rejectQuietPeriodInSeconds = 300
 
 type Mandos interface {
 	LookupClientPathByName(name string) (string, error)

@@ -1,6 +1,6 @@
 module github.com/seiferma/mandos2matrix
 
-go 1.24.0
+go 1.27.0
 
 require (
 	github.com/godbus/dbus/v5 v5.2.4
